@@ -90,6 +90,17 @@ void VFIO::check_cache_coherence()
             "Cache coherence mechanisms unsupported by IOMMU");
 }
 
+void VFIO::get_device_info()
+{
+    struct vfio_device_info dev = { .argsz = sizeof(dev) };
+
+    if (ioctl(device, VFIO_DEVICE_GET_INFO, &dev))
+        throw std::runtime_error("ioctl(): Failed to get device info");
+
+    printf("Device %s info\nFlags: 0b%09b\nRegions: %d\nIRQs: %d\n\n",
+        device_name.c_str(), dev.flags, dev.num_regions, dev.num_irqs);
+}
+
 void VFIO::dma_map_buffer(DataBuffer &buffer)
 {
     if (buffer.data == NULL || buffer.size == 0)

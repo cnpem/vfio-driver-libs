@@ -40,6 +40,11 @@ public:
      */
     void bar_map_buffer(uint32_t index, DataBuffer &buffer);
 
+    /**
+     * @brief Prints info of the device acquired through ioctl
+     */
+    void get_device_info();
+
 private:
     // VFIO interface setup properties
     int container, group, device; // VFIO File descriptors
