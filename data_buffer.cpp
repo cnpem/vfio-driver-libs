@@ -14,7 +14,7 @@ DataBuffer::DataBuffer(size_t size, int prot, int flags, int fd, off_t offset)
         throw std::runtime_error("mmap(): Failed to mmap buffer");
 }
 
-DataBuffer::DataBuffer() {}
+DataBuffer::DataBuffer() { }
 
 void DataBuffer::realloc_buffer(
     size_t n_size, int n_prot, int n_flags, int n_fd, off_t n_offset)
