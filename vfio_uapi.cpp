@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include <fcntl.h>
 #include <linux/vfio.h>
 #include <stdexcept>
 #include <sys/mman.h>
@@ -79,16 +80,31 @@ void VFIO::check_cache_coherence()
             "Cache coherence mechanisms unsupported by IOMMU");
 }
 
-data_buffer VFIO::map_dma_buffer(size_t size)
+data_buffer VFIO::alloc_data_buffer(
+    size_t size, int prot, int flags, int fd, off_t offset)
 {
     data_buffer buffer;
 
-    buffer.size = size;
-
-    buffer.data = mmap(NULL, buffer.size, PROT_READ | PROT_WRITE,
-        MAP_PRIVATE | MAP_SHARED, -1, 0);
+    buffer.data = mmap(NULL, size, prot, flags, fd, offset);
     if (buffer.data == MAP_FAILED)
         throw std::runtime_error("mmap(): Failed to mmap buffer");
+    buffer.size = size;
+
+    return buffer;
+}
+
+void VFIO::unalloc_data_buffer(data_buffer &buffer)
+{
+    if (munmap((void *)buffer.data, buffer.size) == -1)
+        throw std::runtime_error("munmap(): Failed to munmap buffer");
+    buffer.data = NULL;
+    buffer.size = 0;
+}
+
+void VFIO::dma_map_buffer(data_buffer &buffer)
+{
+    if (buffer.data == NULL || buffer.size == 0)
+        throw std::runtime_error("Uninitialized buffer");
 
     struct vfio_iommu_type1_dma_map dma = { .argsz = sizeof(dma),
         .flags = VFIO_DMA_MAP_FLAG_READ | VFIO_DMA_MAP_FLAG_WRITE,
@@ -100,8 +116,6 @@ data_buffer VFIO::map_dma_buffer(size_t size)
 
     if (ioctl(container, VFIO_IOMMU_MAP_DMA, &dma))
         throw std::runtime_error("ioctl(): Failed to map DMA region");
-
-    return buffer;
 }
 
 data_buffer VFIO::map_mem_region(uint32_t index)
