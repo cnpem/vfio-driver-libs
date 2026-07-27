@@ -112,7 +112,7 @@ void VFIO::bar_map_buffer(uint32_t index, DataBuffer &buffer)
     // Get region info
     struct vfio_region_info reg = { .argsz = sizeof(reg), .index = index };
 
-    if (ioctl(device, VFIO_DEVICE_GET_INFO, &reg))
+    if (ioctl(device, VFIO_DEVICE_GET_REGION_INFO, &reg))
         throw std::runtime_error("ioctl(): Failed to get memory region info");
 
     buffer.realloc_buffer(
