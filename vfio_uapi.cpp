@@ -25,6 +25,10 @@ VFIO::VFIO(const std::string &device_name, int32_t iommu_group_id)
     check_cache_coherence();
 
     set_group_to_container();
+
+    set_iommu_type();
+
+    set_device();
 }
 
 void VFIO::set_container()
