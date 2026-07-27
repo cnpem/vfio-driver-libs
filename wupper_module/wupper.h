@@ -40,16 +40,36 @@
 #include "../vfio_uapi.h"
 #include "register_map.h"
 #include <cstdint>
+#include <cstring>
 #include <unistd.h>
 #include "register_map.h"
+#include "../vfio_uapi.h"
 
 class Wupper {
 public:
-    Wupper();
+    /**
+     * @brief Initializes an interface for operation of a Wupper device
+     * @description Initializes a VFIO interface for the device identified by
+     * the device_name and iommu_group_id and uses it to create DataBuffer
+     * references to the device's BARs
+     * @param[in] device_name BDBF identification of the device
+     * @param[in] iommu_group_id ID of the IOMMU group to which the device belongs
+     */
+    Wupper(const std::string device_name, int iommu_group_id);
     ~Wupper();
 
-    // This pointers need to be mapped to the memory regions by the user
-    volatile wuppercard_bar0_regs_t *bar0;
+    /**
+     * @brief Transfers data from the device to the host via DMA
+     * @description Writes the adequate values on the DMA descriptor indicated
+     * by dma_index to make a DMA data transfer with the given buffer as
+     * destination. Before starting the transfer, it calls the VFIO interface to
+     * map the given buffer for DMA transfers
+     * @param[in] transfer_size Size in bytes of the transfer
+     * @param[in] dma_index DMA descriptor index
+     * @param[in] buffer Reference to the DataBuffer object that points to the memory buffer that will receive the transfer
+     */
+    void dma_to_host(size_t transfer_size, uint8_t dma_index, DataBuffer &buffer);
 
-    void dma_to_host(size_t transfer_size, uint64_t start, uint8_t dma_index);
+    VFIO interface;
+    DataBuffer bar0;
 };
