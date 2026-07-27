@@ -45,6 +45,15 @@ Wupper::Wupper(const std::string device_name, int iommu_group_id)
 void Wupper::dma_to_host(
     size_t transfer_size, int dma_index, DataBuffer &buffer)
 {
+    // Verify parameters
+    if (transfer_size <= 0)
+        throw std::runtime_error(
+            "Invalid parameter: Size less than or equal zero");
+
+    if (dma_index < 0 || dma_index > 7)
+        throw std::runtime_error(
+            "Invalid parameter: DMA descriptor index out of range");
+
     volatile wuppercard_bar0_regs_t *bar0_regs
         = (volatile wuppercard_bar0_regs_t *)bar0.data;
 
