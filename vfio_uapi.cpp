@@ -80,28 +80,7 @@ void VFIO::check_cache_coherence()
             "Cache coherence mechanisms unsupported by IOMMU");
 }
 
-data_buffer VFIO::alloc_data_buffer(
-    size_t size, int prot, int flags, int fd, off_t offset)
-{
-    data_buffer buffer;
-
-    buffer.data = mmap(NULL, size, prot, flags, fd, offset);
-    if (buffer.data == MAP_FAILED)
-        throw std::runtime_error("mmap(): Failed to mmap buffer");
-    buffer.size = size;
-
-    return buffer;
-}
-
-void VFIO::unalloc_data_buffer(data_buffer &buffer)
-{
-    if (munmap((void *)buffer.data, buffer.size) == -1)
-        throw std::runtime_error("munmap(): Failed to munmap buffer");
-    buffer.data = NULL;
-    buffer.size = 0;
-}
-
-void VFIO::dma_map_buffer(data_buffer &buffer)
+void VFIO::dma_map_buffer(DataBuffer buffer)
 {
     if (buffer.data == NULL || buffer.size == 0)
         throw std::runtime_error("Uninitialized buffer");
@@ -118,19 +97,15 @@ void VFIO::dma_map_buffer(data_buffer &buffer)
         throw std::runtime_error("ioctl(): Failed to map DMA region");
 }
 
-data_buffer VFIO::map_mem_region(uint32_t index)
+DataBuffer VFIO::map_mem_region(uint32_t index)
 {
-    data_buffer bar;
-
     // Get region info
     struct vfio_region_info reg = { .argsz = sizeof(reg), .index = index };
 
     if (ioctl(device, VFIO_DEVICE_GET_INFO, &reg))
         throw std::runtime_error("ioctl(): Failed to get memory region info");
 
-    bar.size = reg.size;
-    bar.data = mmap(
-        NULL, bar.size, PROT_READ | PROT_WRITE, MAP_SHARED, device, reg.offset);
+    DataBuffer bar = DataBuffer(reg.size, PROT_READ | PROT_WRITE, MAP_SHARED, device, reg.offset);
     if (bar.data == MAP_FAILED)
         throw std::runtime_error("mmap(): Failed to mmap buffer");
     return bar;
