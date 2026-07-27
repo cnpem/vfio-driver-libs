@@ -66,6 +66,11 @@ private:
     void set_device();
 
     /**
+     * @brief Sets IOMMU to IOMMU type1
+     */
+    void set_iommu_type();
+
+    /**
      * @brief Checks type1 IOMMU support
      */
     void check_iommu();
