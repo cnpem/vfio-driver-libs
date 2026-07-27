@@ -74,3 +74,14 @@ typedef struct {
     unsigned char unused9[12]; /* 0x434 - 0x43f */
     volatile unsigned int REGISTERS_RESET; /* 0x440 - 0x443 */
 } wuppercard_bar0_regs_t;
+
+enum {
+    DMA_DESC_0,
+    DMA_DESC_1,
+    DMA_DESC_2,
+    DMA_DESC_3,
+    DMA_DESC_4,
+    DMA_DESC_5,
+    DMA_DESC_6,
+    DMA_DESC_7,
+};

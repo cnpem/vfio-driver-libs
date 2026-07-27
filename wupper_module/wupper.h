@@ -64,12 +64,13 @@ public:
      * destination. Before starting the transfer, it calls the VFIO interface to
      * map the given buffer for DMA transfers
      * @param[in] transfer_size Size in bytes of the transfer
-     * @param[in] dma_index DMA descriptor index
+     * @param[in] dma_index DMA descriptor index, expected to be a member from
+     * the enum defined in register_map
      * @param[in] buffer Reference to the DataBuffer object that points to the
      * memory buffer that will receive the transfer
      */
     void dma_to_host(
-        size_t transfer_size, uint8_t dma_index, DataBuffer &buffer);
+        size_t transfer_size, int dma_index, DataBuffer &buffer);
 
     VFIO interface;
     DataBuffer bar0;
