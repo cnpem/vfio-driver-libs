@@ -28,7 +28,7 @@ public:
      * referenced memory region
      * @param[in] buffer Reference to DataBuffer object to be mapped
      */
-    void dma_map_buffer(DataBuffer buffer);
+    void dma_map_buffer(DataBuffer &buffer);
 
     /**
      * @brief Maps an indexed memory region in the device VFIO file descriptor
@@ -36,9 +36,9 @@ public:
      * via IOCTL and initializes a DataBuffer with its base address and size
      * @param[in] index Index of memory region in the file descriptor, expected
      * to be VFIO's interface BAR region index enum region
-     * @return Struct with reference to region
+     * @param[in] buffer Reference to DataBuffer object to be mapped
      */
-    DataBuffer map_mem_region(uint32_t index);
+    void bar_map_buffer(uint32_t index, DataBuffer &buffer);
 
 private:
     // VFIO interface setup properties

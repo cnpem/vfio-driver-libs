@@ -80,7 +80,7 @@ void VFIO::check_cache_coherence()
             "Cache coherence mechanisms unsupported by IOMMU");
 }
 
-void VFIO::dma_map_buffer(DataBuffer buffer)
+void VFIO::dma_map_buffer(DataBuffer &buffer)
 {
     if (buffer.data == NULL || buffer.size == 0)
         throw std::runtime_error("Uninitialized buffer");
@@ -97,7 +97,7 @@ void VFIO::dma_map_buffer(DataBuffer buffer)
         throw std::runtime_error("ioctl(): Failed to map DMA region");
 }
 
-DataBuffer VFIO::map_mem_region(uint32_t index)
+void VFIO::bar_map_buffer(uint32_t index, DataBuffer &buffer)
 {
     // Get region info
     struct vfio_region_info reg = { .argsz = sizeof(reg), .index = index };
@@ -105,10 +105,10 @@ DataBuffer VFIO::map_mem_region(uint32_t index)
     if (ioctl(device, VFIO_DEVICE_GET_INFO, &reg))
         throw std::runtime_error("ioctl(): Failed to get memory region info");
 
-    DataBuffer bar = DataBuffer(reg.size, PROT_READ | PROT_WRITE, MAP_SHARED, device, reg.offset);
-    if (bar.data == MAP_FAILED)
+    buffer.realloc_buffer(reg.size, PROT_READ | PROT_WRITE, MAP_SHARED, device, reg.offset);
+
+    if (buffer.data == MAP_FAILED)
         throw std::runtime_error("mmap(): Failed to mmap buffer");
-    return bar;
 }
 
 VFIO::~VFIO()
