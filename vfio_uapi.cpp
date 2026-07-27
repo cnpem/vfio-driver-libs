@@ -57,6 +57,12 @@ void VFIO::set_device()
         throw std::runtime_error("ioctl(): Failed to set device");
 }
 
+void VFIO::set_iommu_type()
+{
+    if (ioctl(container, VFIO_SET_IOMMU, VFIO_TYPE1_IOMMU))
+        throw std::runtime_error("ioctl(): Failed to set IOMMU");
+}
+
 void VFIO::check_iommu()
 {
     if (!ioctl(container, VFIO_CHECK_EXTENSION, VFIO_TYPE1_IOMMU))
