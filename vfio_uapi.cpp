@@ -105,7 +105,8 @@ void VFIO::bar_map_buffer(uint32_t index, DataBuffer &buffer)
     if (ioctl(device, VFIO_DEVICE_GET_INFO, &reg))
         throw std::runtime_error("ioctl(): Failed to get memory region info");
 
-    buffer.realloc_buffer(reg.size, PROT_READ | PROT_WRITE, MAP_SHARED, device, reg.offset);
+    buffer.realloc_buffer(
+        reg.size, PROT_READ | PROT_WRITE, MAP_SHARED, device, reg.offset);
 
     if (buffer.data == MAP_FAILED)
         throw std::runtime_error("mmap(): Failed to mmap buffer");

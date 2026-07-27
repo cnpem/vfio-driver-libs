@@ -42,9 +42,11 @@ Wupper::Wupper(const std::string device_name, int iommu_group_id)
     interface.bar_map_buffer(VFIO_PCI_BAR0_REGION_INDEX, bar0);
 }
 
-void Wupper::dma_to_host(size_t transfer_size, uint8_t dma_index, DataBuffer &buffer)
+void Wupper::dma_to_host(
+    size_t transfer_size, uint8_t dma_index, DataBuffer &buffer)
 {
-    volatile wuppercard_bar0_regs_t* bar0_regs = (volatile wuppercard_bar0_regs_t *)bar0.data;
+    volatile wuppercard_bar0_regs_t *bar0_regs
+        = (volatile wuppercard_bar0_regs_t *)bar0.data;
 
     // Create and enable DMA descriptor (Wupper)
     volatile dma_descriptor_t &dma_desc = bar0_regs->DMA_DESC[dma_index];
@@ -64,4 +66,4 @@ void Wupper::dma_to_host(size_t transfer_size, uint8_t dma_index, DataBuffer &bu
     bar0_regs->DMA_DESC_ENABLE |= 0x1 << dma_index;
 }
 
-Wupper::~Wupper() {}
+Wupper::~Wupper() { }

@@ -42,8 +42,6 @@
 #include <cstdint>
 #include <cstring>
 #include <unistd.h>
-#include "register_map.h"
-#include "../vfio_uapi.h"
 
 class Wupper {
 public:
@@ -53,7 +51,8 @@ public:
      * the device_name and iommu_group_id and uses it to create DataBuffer
      * references to the device's BARs
      * @param[in] device_name BDBF identification of the device
-     * @param[in] iommu_group_id ID of the IOMMU group to which the device belongs
+     * @param[in] iommu_group_id ID of the IOMMU group to which the device
+     * belongs
      */
     Wupper(const std::string device_name, int iommu_group_id);
     ~Wupper();
@@ -66,9 +65,11 @@ public:
      * map the given buffer for DMA transfers
      * @param[in] transfer_size Size in bytes of the transfer
      * @param[in] dma_index DMA descriptor index
-     * @param[in] buffer Reference to the DataBuffer object that points to the memory buffer that will receive the transfer
+     * @param[in] buffer Reference to the DataBuffer object that points to the
+     * memory buffer that will receive the transfer
      */
-    void dma_to_host(size_t transfer_size, uint8_t dma_index, DataBuffer &buffer);
+    void dma_to_host(
+        size_t transfer_size, uint8_t dma_index, DataBuffer &buffer);
 
     VFIO interface;
     DataBuffer bar0;
