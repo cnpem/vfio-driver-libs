@@ -8,4 +8,4 @@ vfio_dep = declare_dependency(include_directories: '../..', link_with: vfio)
 wupper = library('wupper', '../wupper.cpp', include_directories: '..', dependencies: vfio_dep)
 
 # Build example application
-executable('dma_single_transfer', 'dma_single_transfer.cpp', link_with: [wupper])
+executable('setup_test', 'setup_test.cpp', link_with: [wupper])
