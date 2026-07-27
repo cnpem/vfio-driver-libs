@@ -20,6 +20,12 @@ public:
      * Defaults to 0
      */
     DataBuffer(size_t size, int prot, int flags = MAP_ANONYMOUS, int fd = -1, off_t offset = 0);
+
+    /**
+     * @brief Returns a DataBuffer object with no initialized buffer
+     */
+    DataBuffer();
+
     ~DataBuffer();
 
     /**
