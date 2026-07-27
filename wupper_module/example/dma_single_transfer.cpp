@@ -21,7 +21,7 @@ int main(int argc, char **argv)
         DataBuffer buffer = DataBuffer(transfer_size, PROT_READ | PROT_WRITE);
 
         // Do DMA transfer
-        xupp3r.dma_to_host(transfer_size, 0, buffer);
+        xupp3r.dma_to_host(transfer_size, DMA_DESC_0, buffer);
         read_region((void *)buffer.data, 0, buffer.size + 0x10);
     } catch (std::runtime_error &e) {
         std::perror(e.what());

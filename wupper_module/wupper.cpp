@@ -43,7 +43,7 @@ Wupper::Wupper(const std::string device_name, int iommu_group_id)
 }
 
 void Wupper::dma_to_host(
-    size_t transfer_size, uint8_t dma_index, DataBuffer &buffer)
+    size_t transfer_size, int dma_index, DataBuffer &buffer)
 {
     volatile wuppercard_bar0_regs_t *bar0_regs
         = (volatile wuppercard_bar0_regs_t *)bar0.data;
