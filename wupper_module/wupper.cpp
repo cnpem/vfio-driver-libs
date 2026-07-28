@@ -73,6 +73,9 @@ void Wupper::dma_to_host(
 
     // Address 0x0400 - DMA_DESC_ENABLE
     bar0_regs->DMA_DESC_ENABLE |= 0x1 << dma_index;
+
+    // Wait DMA descriptor to clear
+    while (bar0_regs->DMA_DESC_ENABLE & (0x1 << dma_index));
 }
 
 Wupper::~Wupper() { }
