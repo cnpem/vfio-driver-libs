@@ -10,8 +10,12 @@ int32_t read_region(void *region, uint64_t offset, uint64_t length);
 int main(int argc, char **argv)
 {
     try {
+        // Verify command line arguments
+        if (argc != 3)
+            throw std::runtime_error("Command usage <Device DBDF> <IOMMU group ID>");
+
         // Initialize device interface
-        Wupper xupp3r = Wupper("0000:01:00.0", 2);
+        Wupper xupp3r = Wupper(argv[1], std::stoi(argv[2]));
 
         // Read BAR0
         // The registers are 16 bytes long, so add 0x10 to the end address
