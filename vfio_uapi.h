@@ -45,6 +45,13 @@ public:
      */
     void get_device_info();
 
+    /**
+     * @brief Prints info of the indexed region acquired through ioctl
+     * @param[in] index Index of memory region in the file descriptor, expected
+     * to be VFIO's interface BAR region index enum region
+     */
+    void get_region_info(uint32_t index);
+
 private:
     // VFIO interface setup properties
     int container, group, device; // VFIO File descriptors
