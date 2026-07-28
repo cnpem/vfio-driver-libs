@@ -19,8 +19,8 @@ public:
      * @param[in] offset Offset in the file, in case of a file a mapping.
      * Defaults to 0
      */
-    DataBuffer(size_t size, int prot, int flags = MAP_ANONYMOUS, int fd = -1,
-        off_t offset = 0);
+    DataBuffer(size_t size, int prot, int flags = MAP_PRIVATE | MAP_ANONYMOUS,
+        int fd = -1, off_t offset = 0);
 
     /**
      * @brief Returns a DataBuffer object with no initialized buffer
@@ -43,8 +43,9 @@ public:
      * @param[in] n_offset New offset in the file, in case of a file a mapping.
      * Defaults to 0
      */
-    void realloc_buffer(
-        size_t n_size, int n_prot, int n_flags = MAP_ANONYMOUS, int n_fd = -1, off_t n_offset = 0);
+    void realloc_buffer(size_t n_size, int n_prot,
+        int n_flags = MAP_PRIVATE | MAP_ANONYMOUS, int n_fd = -1,
+        off_t n_offset = 0);
 
     volatile void *data = nullptr;
     size_t size = 0;
