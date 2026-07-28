@@ -101,6 +101,17 @@ void VFIO::get_device_info()
         device_name.c_str(), dev.flags, dev.num_regions, dev.num_irqs);
 }
 
+void VFIO::get_region_info(uint32_t index)
+{
+    struct vfio_region_info reg = { .argsz = sizeof(reg), .index = index };
+
+    if (ioctl(device, VFIO_DEVICE_GET_REGION_INFO, &reg))
+        throw std::runtime_error("ioctl(): Failed to get memory region info");
+
+    printf("Region %d info\nFlags: 0b%04b\nSize: %llu\nOffset: %llu\n\n", index,
+        reg.flags, reg.size, reg.offset);
+}
+
 void VFIO::dma_map_buffer(DataBuffer &buffer)
 {
     if (buffer.data == NULL || buffer.size == 0)
