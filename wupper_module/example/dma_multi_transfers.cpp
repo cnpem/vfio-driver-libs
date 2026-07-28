@@ -5,6 +5,7 @@
 #include <sys/mman.h>
 
 #define MAX_TRANSFER 2084065280UL
+#define REGION_SIZE (4 * 1024 * 1024)
 int32_t read_region(void *region, uint64_t offset, uint64_t length);
 
 int main(int argc, char **argv)
@@ -23,10 +24,10 @@ int main(int argc, char **argv)
         read_region((void *)xupp3r.bar0.data, 0, xupp3r.bar0.size + 0x10);
 
         // Initialize regions to receive data
-        #define num_regions 4
-        size_t transfer_size = MAX_TRANSFER/num_regions;
-        std::array<DataBuffer, num_regions> bufs;
-        for (int i = 0; i < num_regions; i++)
+        #define NUM_BUFFERS 4
+        size_t transfer_size = REGION_SIZE/NUM_BUFFERS;
+        std::array<DataBuffer, NUM_BUFFERS> bufs;
+        for (int i = 0; i < NUM_BUFFERS; i++)
             bufs[i] = DataBuffer(transfer_size, PROT_READ | PROT_WRITE);
 
         // Do DMA transfers
@@ -34,7 +35,7 @@ int main(int argc, char **argv)
         for (int j = 0; j < num_cycles; j++)
         {
             printf("############### CYCLE %d ###############\n\n", j);
-            for (int i = 0; i < num_regions; i++)
+            for (int i = 0; i < NUM_BUFFERS; i++)
             {
                 printf("## REGION %d ##\n", i);
                 xupp3r.dma_to_host(transfer_size, DMA_DESC_0, bufs[i]);
