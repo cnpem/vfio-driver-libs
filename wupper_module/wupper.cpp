@@ -69,8 +69,6 @@ void Wupper::dma_to_host(
     dma_desc.read = 0;
     dma_desc.wrap_around = 0;
 
-    interface.dma_map_buffer(buffer);
-
     // Address 0x0400 - DMA_DESC_ENABLE
     bar0_regs->DMA_DESC_ENABLE |= 0x1 << dma_index;
 
