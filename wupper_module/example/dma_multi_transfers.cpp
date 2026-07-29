@@ -18,11 +18,6 @@ int main(int argc, char **argv)
         // Initialize device interface
         Wupper xupp3r = Wupper(argv[1], std::stoi(argv[2]));
 
-        // Read BAR0
-        // The registers are 16 bytes long, so add 0x10 to the end address
-        // to print the content of the register on that address
-        read_region((void *)xupp3r.bar0.data, 0, xupp3r.bar0.size + 0x10);
-
         // Initialize regions to receive data
         #define NUM_BUFFERS 4
         size_t transfer_size = REGION_SIZE/NUM_BUFFERS;
