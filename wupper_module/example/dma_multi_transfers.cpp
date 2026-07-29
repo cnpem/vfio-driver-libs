@@ -23,7 +23,7 @@ int main(int argc, char **argv)
         size_t transfer_size = REGION_SIZE/NUM_BUFFERS;
         std::array<DataBuffer, NUM_BUFFERS> bufs;
         for (int i = 0; i < NUM_BUFFERS; i++)
-            bufs[i] = DataBuffer(transfer_size, PROT_READ | PROT_WRITE);
+            bufs[i].realloc_buffer(transfer_size, PROT_READ | PROT_WRITE);
 
         // Do DMA transfers
         int num_cycles = 3;
