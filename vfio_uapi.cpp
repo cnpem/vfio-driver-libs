@@ -114,12 +114,12 @@ void VFIO::get_region_info(uint32_t index)
 
 void VFIO::dma_map_buffer(DataBuffer &buffer)
 {
-    if (buffer.data == NULL || buffer.size == 0)
+    if (buffer.vaddr == NULL || buffer.size == 0)
         throw std::runtime_error("Uninitialized buffer");
 
     struct vfio_iommu_type1_dma_map dma = { .argsz = sizeof(dma),
         .flags = VFIO_DMA_MAP_FLAG_READ | VFIO_DMA_MAP_FLAG_WRITE,
-        .vaddr = (uintptr_t)buffer.data,
+        .vaddr = (uintptr_t)buffer.vaddr,
         .iova = iova,
         .size = (uint64_t)buffer.size };
 
@@ -140,7 +140,7 @@ void VFIO::bar_map_buffer(uint32_t index, DataBuffer &buffer)
     buffer.realloc_buffer(
         reg.size, PROT_READ | PROT_WRITE, MAP_SHARED, device, reg.offset);
 
-    if (buffer.data == MAP_FAILED)
+    if (buffer.vaddr == MAP_FAILED)
         throw std::runtime_error("mmap(): Failed to mmap buffer");
 }
 

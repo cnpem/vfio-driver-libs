@@ -47,7 +47,7 @@ public:
         int n_flags = MAP_PRIVATE | MAP_ANONYMOUS, int n_fd = -1,
         off_t n_offset = 0);
 
-    volatile void *data = nullptr;
+    volatile void *vaddr = nullptr;
     size_t size = 0;
     int prot;
     int flags;

@@ -55,7 +55,7 @@ void Wupper::dma_to_host(
             "Invalid parameter: DMA descriptor index out of range");
 
     volatile wuppercard_bar0_regs_t *bar0_regs
-        = (volatile wuppercard_bar0_regs_t *)bar0.data;
+        = (volatile wuppercard_bar0_regs_t *)bar0.vaddr;
 
     // Create and enable DMA descriptor (Wupper)
     volatile dma_descriptor_t &dma_desc = bar0_regs->DMA_DESC[dma_index];

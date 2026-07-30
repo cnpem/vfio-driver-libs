@@ -34,7 +34,7 @@ int main(int argc, char **argv)
             {
                 printf("## REGION %d ##\n", i);
                 xupp3r.dma_to_host(transfer_size, DMA_DESC_0, bufs[i]);
-                read_region((void *)bufs[i].data, 0, bufs[i].size + 0x10);
+                read_region((void *)bufs[i].vaddr, 0, bufs[i].size + 0x10);
             }
         }
     } catch (std::runtime_error &e) {
