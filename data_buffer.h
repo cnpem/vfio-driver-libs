@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <cstdint>
 #include <iostream>
 #include <sys/mman.h>
 
@@ -48,6 +49,7 @@ public:
         off_t n_offset = 0);
 
     volatile void *vaddr = nullptr;
+    uint64_t iova;
     size_t size = 0;
     int prot;
     int flags;
