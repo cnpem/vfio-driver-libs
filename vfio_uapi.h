@@ -18,7 +18,6 @@ public:
     // VFIO user-defined properties
     const std::string device_name; // DBDF
     int iommu_group_id; // IOMMU group number
-    uint64_t iova; // Device virtual address space for DMA operations
 
     // VFIO user interface setup methods
     //

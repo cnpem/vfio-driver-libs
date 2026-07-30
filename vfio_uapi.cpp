@@ -12,8 +12,6 @@ VFIO::VFIO(const std::string &device_name, int32_t iommu_group_id)
     : device_name(device_name)
     , iommu_group_id(iommu_group_id)
 {
-    iova = 0x1000;
-
     set_container();
 
     check_iommu();
@@ -120,10 +118,8 @@ void VFIO::dma_map_buffer(DataBuffer &buffer)
     struct vfio_iommu_type1_dma_map dma = { .argsz = sizeof(dma),
         .flags = VFIO_DMA_MAP_FLAG_READ | VFIO_DMA_MAP_FLAG_WRITE,
         .vaddr = (uintptr_t)buffer.vaddr,
-        .iova = iova,
+        .iova = buffer.iova,
         .size = (uint64_t)buffer.size };
-
-    iova += buffer.size;
 
     if (ioctl(container, VFIO_IOMMU_MAP_DMA, &dma))
         throw std::runtime_error("ioctl(): Failed to map DMA region");

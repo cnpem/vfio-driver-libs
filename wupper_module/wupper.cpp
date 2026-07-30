@@ -61,8 +61,8 @@ void Wupper::dma_to_host(
     volatile dma_descriptor_t &dma_desc = bar0_regs->DMA_DESC[dma_index];
 
     // Address 0x0000 - DMA_DESC_0
-    dma_desc.start_address = interface.iova;
-    dma_desc.end_address = interface.iova + transfer_size;
+    dma_desc.start_address = buffer.iova;
+    dma_desc.end_address = buffer.iova + transfer_size;
 
     // Adderss 0x0030 - DMA_DESC_1a
     dma_desc.tlp = MAX_TLP_BYTES / 4;
