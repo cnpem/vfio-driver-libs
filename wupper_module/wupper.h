@@ -87,6 +87,15 @@ public:
      */
     bool dma_is_done(int dma_index);
 
+    /**
+     * @brief Returns the value of the even_cycle bit on the indexed DMA
+     * descriptor status register as a boolean
+     * @param[in] dma_index DMA descriptor index, expected to be a member from
+     * the enum defined in register_map
+     * @return Value of the even_cycle bit
+     */
+    bool dma_get_even_addr(int dma_index);
+
     VFIO interface;
     DataBuffer bar0;
 };
