@@ -43,7 +43,7 @@ Wupper::Wupper(const std::string device_name, int iommu_group_id)
 }
 
 void Wupper::dma_to_host(
-    size_t transfer_size, int dma_index, DataBuffer &buffer)
+    size_t transfer_size, int dma_index, bool wrap_around, DataBuffer &buffer)
 {
     // Verify parameters
     if (transfer_size <= 0)
@@ -67,7 +67,7 @@ void Wupper::dma_to_host(
     // Adderss 0x0030 - DMA_DESC_1a
     dma_desc.tlp = MAX_TLP_BYTES / 4;
     dma_desc.read = 0;
-    dma_desc.wrap_around = 0;
+    dma_desc.wrap_around = wrap_around;
 
     // Address 0x0400 - DMA_DESC_ENABLE
     bar0_regs->DMA_DESC_ENABLE |= 0x1 << dma_index;
