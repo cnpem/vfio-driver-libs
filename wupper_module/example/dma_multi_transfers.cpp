@@ -22,8 +22,11 @@ int main(int argc, char **argv)
         #define NUM_BUFFERS 4
         size_t transfer_size = REGION_SIZE/NUM_BUFFERS;
         std::array<DataBuffer, NUM_BUFFERS> bufs;
-        for (int i = 0; i < NUM_BUFFERS; i++)
+        for (int i = 0; i < NUM_BUFFERS; i++) {
             bufs[i].realloc_buffer(transfer_size, PROT_READ | PROT_WRITE);
+            bufs[i].iova = 0x1000 + i*transfer_size;
+            xupp3r.interface.dma_map_buffer(bufs[i]);
+        }
 
         // Do DMA transfers
         int num_cycles = 3;
@@ -33,7 +36,8 @@ int main(int argc, char **argv)
             for (int i = 0; i < NUM_BUFFERS; i++)
             {
                 printf("## REGION %d ##\n", i);
-                xupp3r.dma_to_host(transfer_size, DMA_DESC_0, bufs[i]);
+                xupp3r.dma_to_host(transfer_size, bufs[i].iova, DMA_DESC_0, false);
+                while (!xupp3r.dma_is_done(DMA_DESC_0));
                 read_region((void *)bufs[i].vaddr, 0, bufs[i].size + 0x10);
             }
         }
