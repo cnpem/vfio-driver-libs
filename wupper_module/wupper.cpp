@@ -40,6 +40,7 @@ Wupper::Wupper(const std::string device_name, int iommu_group_id)
     , interface(VFIO(device_name, iommu_group_id))
 {
     interface.bar_map_buffer(VFIO_PCI_BAR0_REGION_INDEX, bar0);
+    bar0_regs = (wuppercard_bar0_regs_t *)bar0.vaddr;
 }
 
 void Wupper::dma_to_host(
@@ -53,9 +54,6 @@ void Wupper::dma_to_host(
     if (dma_index < 0 || dma_index > 7)
         throw std::runtime_error(
             "Invalid parameter: DMA descriptor index out of range");
-
-    volatile wuppercard_bar0_regs_t *bar0_regs
-        = (volatile wuppercard_bar0_regs_t *)bar0.vaddr;
 
     // Create and enable DMA descriptor (Wupper)
     volatile dma_descriptor_t &dma_desc = bar0_regs->DMA_DESC[dma_index];
@@ -82,9 +80,6 @@ bool Wupper::dma_is_done(int dma_index)
         throw std::runtime_error(
             "Invalid parameter: DMA descriptor index out of range");
 
-    volatile wuppercard_bar0_regs_t *bar0_regs
-        = (volatile wuppercard_bar0_regs_t *)bar0.vaddr;
-
     return (bool)!(bar0_regs->DMA_DESC_ENABLE & (0x1 << dma_index));
 }
 
@@ -93,9 +88,6 @@ bool Wupper::dma_get_even_addr(int dma_index)
     if (dma_index < 0 || dma_index > 7)
         throw std::runtime_error(
             "Invalid parameter: DMA descriptor index out of range");
-
-    volatile wuppercard_bar0_regs_t *bar0_regs
-        = (volatile wuppercard_bar0_regs_t *)bar0.vaddr;
 
     return (bool)bar0_regs->DMA_DESC_STATUS[dma_index].even_addr_dma;
 }
@@ -106,9 +98,6 @@ u_long Wupper::dma_get_current_addr(int dma_index)
         throw std::runtime_error(
             "Invalid parameter: DMA descriptor index out of range");
 
-    volatile wuppercard_bar0_regs_t *bar0_regs
-        = (volatile wuppercard_bar0_regs_t *)bar0.vaddr;
-
     return bar0_regs->DMA_DESC_STATUS[dma_index].current_address;
 }
 
@@ -118,10 +107,8 @@ void Wupper::dma_update_read_ptr(int dma_index)
         throw std::runtime_error(
             "Invalid parameter: DMA descriptor index out of range");
 
-    volatile wuppercard_bar0_regs_t *bar0_regs
-        = (volatile wuppercard_bar0_regs_t *)bar0.vaddr;
-
     volatile dma_descriptor_t &dma_desc = bar0_regs->DMA_DESC[dma_index];
+
     dma_desc.read_ptr = dma_get_current_addr(dma_index);
 }
 
