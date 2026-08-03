@@ -115,4 +115,5 @@ public:
 
     VFIO interface;
     DataBuffer bar0;
+    wuppercard_bar0_regs_t *bar0_regs;
 };
