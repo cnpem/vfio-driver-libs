@@ -96,6 +96,15 @@ public:
      */
     bool dma_get_even_addr(int dma_index);
 
+    /**
+     * @brief Returns the last address written by DMA
+     * @param[in] dma_index DMA descriptor index, expected to be a member from
+     * the enum defined in register_map
+     * @return Value of the current_address field of the indexed DMA descriptor
+     * status register
+     */
+    u_long dma_get_current_addr(int dma_index);
+
     VFIO interface;
     DataBuffer bar0;
 };

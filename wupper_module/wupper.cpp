@@ -100,4 +100,16 @@ bool Wupper::dma_get_even_addr(int dma_index)
     return (bool)bar0_regs->DMA_DESC_STATUS[dma_index].even_addr_dma;
 }
 
+u_long Wupper::dma_get_current_addr(int dma_index)
+{
+    if (dma_index < 0 || dma_index > 7)
+        throw std::runtime_error(
+            "Invalid parameter: DMA descriptor index out of range");
+
+    volatile wuppercard_bar0_regs_t *bar0_regs
+        = (volatile wuppercard_bar0_regs_t *)bar0.vaddr;
+
+    return bar0_regs->DMA_DESC_STATUS[dma_index].current_address;
+}
+
 Wupper::~Wupper() { }
