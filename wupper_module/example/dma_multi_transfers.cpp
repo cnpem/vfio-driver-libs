@@ -1,6 +1,7 @@
 #include "../wupper.h"
 #include <array>
 #include <chrono>
+#include <csignal>
 #include <cstdio>
 #include <iostream>
 #include <stdexcept>
@@ -10,6 +11,7 @@
 #define REGION_SIZE 4096
 #define NUM_BUFFERS 2
 int32_t read_region(void *region, uint64_t offset, uint64_t length);
+void sig_int_handler(int);
 
 int main(int argc, char **argv)
 {
@@ -17,6 +19,15 @@ int main(int argc, char **argv)
         // Verify command line arguments
         if (argc != 3)
             throw std::runtime_error("Command usage <Device DBDF> <IOMMU group ID>");
+
+        int sa_stat;
+        static struct sigaction sa;
+
+        sigemptyset(&sa.sa_mask);
+        sa.sa_flags = 0;
+        sa.sa_handler = sig_int_handler;
+        if (sigaction(SIGINT, &sa, NULL) < 0)
+            throw std::runtime_error("Failed to install signal handler");
 
         // Initialize device interface
         Wupper xupp3r = Wupper(argv[1], std::stoi(argv[2]));
@@ -81,4 +92,9 @@ int32_t read_region(void *region, uint64_t offset, uint64_t length)
     printf("\n");
 
     return 0;
+}
+
+void sig_int_handler(int)
+{
+    exit(1);
 }
