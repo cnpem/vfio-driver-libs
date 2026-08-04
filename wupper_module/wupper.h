@@ -72,6 +72,19 @@ public:
     void dma_to_host(
         size_t transfer_size, int dma_index, DataBuffer &buffer);
 
+    /**
+     * @brief Returns whether the one-shot DMA transfer from the indexed DMA
+     * descriptor is done or not
+     * @description The DMA_DESC_ENABLE bit correspondent to the indexed DMA
+     * descriptor is set to start the transfer and is cleared when it is done,
+     * so the bit is read and is complement is returned as a bool
+     * @param[in] dma_index DMA descriptor index, expected to be a member from
+     * the enum defined in register_map
+     * @return Complement of the DMA_DESC_ENABLE bit of the indexed DMMA
+     * descriptor
+     */
+    bool dma_is_done(int dma_index);
+
     VFIO interface;
     DataBuffer bar0;
 };

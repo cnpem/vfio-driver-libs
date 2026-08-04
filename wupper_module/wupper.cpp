@@ -73,4 +73,16 @@ void Wupper::dma_to_host(
     bar0_regs->DMA_DESC_ENABLE |= 0x1 << dma_index;
 }
 
+bool Wupper::dma_is_done(int dma_index)
+{
+    if (dma_index < 0 || dma_index > 7)
+        throw std::runtime_error(
+            "Invalid parameter: DMA descriptor index out of range");
+
+    volatile wuppercard_bar0_regs_t *bar0_regs
+        = (volatile wuppercard_bar0_regs_t *)bar0.vaddr;
+
+    return (bool)!(bar0_regs->DMA_DESC_ENABLE & (0x1 << dma_index));
+}
+
 Wupper::~Wupper() { }
