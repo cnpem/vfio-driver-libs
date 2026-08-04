@@ -105,6 +105,14 @@ public:
      */
     u_long dma_get_current_addr(int dma_index);
 
+    /**
+     * @brief Updates field of the indexed DMA descriptor that indicates last
+     * read address from the DMA mapped region
+     * @param[in] dma_index DMA descriptor index, expected to be a member from
+     * the enum defined in register_map
+     */
+    void dma_update_read_ptr(int dma_index);
+
     VFIO interface;
     DataBuffer bar0;
 };
