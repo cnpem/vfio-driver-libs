@@ -44,7 +44,7 @@ Wupper::Wupper(const std::string device_name, int iommu_group_id)
 }
 
 void Wupper::dma_to_host(
-    size_t transfer_size, int dma_index, bool wrap_around, DataBuffer &buffer)
+    size_t transfer_size, unsigned long dst, int dma_index, bool wrap_around)
 {
     // Verify parameters
     if (transfer_size <= 0)
@@ -59,8 +59,8 @@ void Wupper::dma_to_host(
     volatile dma_descriptor_t &dma_desc = bar0_regs->DMA_DESC[dma_index];
 
     // Address 0x0000 - DMA_DESC_0
-    dma_desc.start_address = buffer.iova;
-    dma_desc.end_address = buffer.iova + transfer_size;
+    dma_desc.start_address = dst;
+    dma_desc.end_address = dst + transfer_size;
 
     // Adderss 0x0030 - DMA_DESC_1a
     dma_desc.tlp = MAX_TLP_BYTES / 4;
@@ -68,7 +68,7 @@ void Wupper::dma_to_host(
     dma_desc.wrap_around = wrap_around;
 
     if (wrap_around)
-        dma_desc.read_ptr = dma_desc.start_address;
+        dma_desc.read_ptr = dst;
 
     // Address 0x0400 - DMA_DESC_ENABLE
     bar0_regs->DMA_DESC_ENABLE |= 0x1 << dma_index;
