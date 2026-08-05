@@ -58,11 +58,11 @@ void Wupper::dma_to_host(
     // Create and enable DMA descriptor (Wupper)
     volatile dma_descriptor_t &dma_desc = bar0_regs->DMA_DESC[dma_index];
 
-    // Address 0x0000 - DMA_DESC_0
+    // Higher half of the register
     dma_desc.start_address = dst;
     dma_desc.end_address = dst + transfer_size;
 
-    // Adderss 0x0030 - DMA_DESC_1a
+    // Lower half of the register
     dma_desc.tlp = MAX_TLP_BYTES / 4;
     dma_desc.read = 0;
     dma_desc.wrap_around = wrap_around;
