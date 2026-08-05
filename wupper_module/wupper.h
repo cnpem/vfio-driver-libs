@@ -64,15 +64,14 @@ public:
      * destination. Before starting the transfer, it calls the VFIO interface to
      * map the given buffer for DMA transfers
      * @param[in] transfer_size Size in bytes of the transfer
+     * @param[in] dst Destination address for the transfer
      * @param[in] dma_index DMA descriptor index, expected to be a member from
      * the enum defined in register_map
      * @param[in] wrap_around If false, DMA will operate in single transfer mode, if
      * true will operate in wrap_around mode
-     * @param[in] buffer Reference to the DataBuffer object that points to the
-     * memory buffer that will receive the transfer
      */
-    void dma_to_host(
-        size_t transfer_size, int dma_index, bool wrap_around, DataBuffer &buffer);
+    void dma_to_host(size_t transfer_size, unsigned long dst, int dma_index,
+        bool wrap_around);
 
     /**
      * @brief Returns whether the one-shot DMA transfer from the indexed DMA
