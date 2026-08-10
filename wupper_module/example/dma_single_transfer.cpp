@@ -19,17 +19,24 @@ int main(int argc, char **argv)
         // Initialize region to receive data
         size_t transfer_size = 4096 * std::stoi(argv[3]);
         DataBuffer buffer = DataBuffer(transfer_size, PROT_READ | PROT_WRITE);
+        buffer.iova = 0x1000;
+
+        // Map buffer
+        xupp3r.interface.dma_map_buffer(buffer);
 
         // Do DMA transfer
-        xupp3r.dma_to_host(transfer_size, DMA_DESC_0, buffer);
+        xupp3r.dma_to_host(transfer_size, buffer.iova, DMA_DESC_0, false);
+        while (!xupp3r.dma_is_done(DMA_DESC_0)); // Wait for conclusion
 
         // Read BAR0
         // The registers are 16 bytes long, so add 0x10 to the end address
         // to print the content of the register on that address
-        read_region((void *)xupp3r.bar0.data, 0, xupp3r.bar0.size + 0x10);
+        // 0x4A0 is the address of the last register on BAR0, even
+        // though the region size is much bigger
+        read_region((void *)xupp3r.bar0.vaddr, 0, 0x4A0 + 0x10);
 
         // Read transfered data
-        read_region((void *)buffer.data, 0, buffer.size + 0x10);
+        read_region((void *)buffer.vaddr, 0, buffer.size + 0x10);
     } catch (std::runtime_error &e) {
         std::perror(e.what());
         exit(1);
