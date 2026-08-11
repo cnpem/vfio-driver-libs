@@ -1,6 +1,8 @@
 #include "../wupper.h"
 #include <array>
+#include <chrono>
 #include <cstdio>
+#include <iostream>
 #include <stdexcept>
 #include <sys/mman.h>
 
@@ -33,9 +35,14 @@ int main(int argc, char **argv)
         // Variables to track DMA wrap around
         bool even_dma, current_even_dma;
 
+        // Variables to measure performance
+        std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
+
         for (int i = 0; i < num_cycles; i++) {
             // Map buffer
+            start = std::chrono::high_resolution_clock::now();
             xupp3r.interface.dma_map_buffer(bufs[i % NUM_BUFFERS]);
+            stop = std::chrono::high_resolution_clock::now();
 
             if (i == 0)
                 // Start endless DMA
