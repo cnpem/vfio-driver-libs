@@ -5,7 +5,8 @@
 #include <sys/mman.h>
 
 #define MAX_TRANSFER 2084065280UL
-#define REGION_SIZE (4 * 1024 * 1024)
+#define REGION_SIZE 4096
+#define NUM_BUFFERS 2
 int32_t read_region(void *region, uint64_t offset, uint64_t length);
 
 int main(int argc, char **argv)
@@ -19,26 +20,38 @@ int main(int argc, char **argv)
         Wupper xupp3r = Wupper(argv[1], std::stoi(argv[2]));
 
         // Initialize regions to receive data
-        #define NUM_BUFFERS 4
         size_t transfer_size = REGION_SIZE/NUM_BUFFERS;
         std::array<DataBuffer, NUM_BUFFERS> bufs;
         for (int i = 0; i < NUM_BUFFERS; i++) {
             bufs[i].realloc_buffer(transfer_size, PROT_READ | PROT_WRITE);
-            bufs[i].iova = 0x1000 + i*transfer_size;
-            xupp3r.interface.dma_map_buffer(bufs[i]);
+            bufs[i].iova = 0x1000;
         }
 
-        // Do DMA transfers
-        int num_cycles = 3;
-        for (int j = 0; j < num_cycles; j++)
-        {
-            printf("############### CYCLE %d ###############\n\n", j);
-            for (int i = 0; i < NUM_BUFFERS; i++)
-            {
-                printf("## REGION %d ##\n", i);
-                xupp3r.dma_to_host(transfer_size, bufs[i].iova, DMA_DESC_0, false);
-                while (!xupp3r.dma_is_done(DMA_DESC_0));
-                read_region((void *)bufs[i].vaddr, 0, bufs[i].size + 0x10);
+        // Application loop
+        int num_cycles = 2;
+
+        // Variables to track DMA wrap around
+        bool even_dma, current_even_dma;
+
+        for (int i = 0; i < num_cycles; i++) {
+            // Map buffer
+            xupp3r.interface.dma_map_buffer(bufs[i % NUM_BUFFERS]);
+
+            if (i == 0)
+                // Start endless DMA
+                xupp3r.dma_to_host(transfer_size, (unsigned long)bufs[0].iova,
+                    DMA_DESC_0, true);
+
+            // Wait for wrap around
+            even_dma = xupp3r.dma_get_even_addr(DMA_DESC_0);
+            current_even_dma = even_dma;
+            while (even_dma == current_even_dma) {
+                std::cout << "DMA current addr = "
+                          << xupp3r.dma_get_current_addr(DMA_DESC_0) << '\n';
+
+                xupp3r.dma_update_read_ptr(DMA_DESC_0);
+                current_even_dma = xupp3r.dma_get_even_addr(DMA_DESC_0);
+                std::cout << "even_dma = " << current_even_dma << '\n';
             }
         }
     } catch (std::runtime_error &e) {
