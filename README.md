@@ -34,7 +34,7 @@ The application executables are built inside `<builddir>`.
 
 | Example application | Description | Expected arguments |
 |---------------------|-------------|--------------------|
-| setup_test | Prints information of the device and BAR0 acquired through ioctl to test the funcitionality of the VFIO interface | `<Device DBDF> <IOMMU group ID>` |
+| setup_test | Prints information of the device and BAR0 acquired through ioctl to test the functionality of the VFIO interface | `<Device DBDF> <IOMMU group ID>` |
 | dma_single_transfer | Makes a one-shot DMA transfer from the device to the host PC, prints BAR0 and the data transfer to STDOUT | `<Device DBDF> <IOMMU group ID> <Transfer size in number of pages>` |
 | dma_multi_transfers | Divides a 4 MB region in 4 buffers and does 3 cycles of sequential DMA transfers to each one | `<Device DBDF> <IOMMU group ID>` |
 
