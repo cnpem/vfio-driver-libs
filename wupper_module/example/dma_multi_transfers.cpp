@@ -18,7 +18,8 @@ int main(int argc, char **argv)
     try {
         // Verify command line arguments
         if (argc != 3)
-            throw std::runtime_error("Command usage <Device DBDF> <IOMMU group ID>");
+            throw std::runtime_error(
+                "Command usage <Device DBDF> <IOMMU group ID>");
 
         int sa_stat;
         static struct sigaction sa;
@@ -33,7 +34,7 @@ int main(int argc, char **argv)
         Wupper xupp3r = Wupper(argv[1], std::stoi(argv[2]));
 
         // Initialize regions to receive data
-        size_t transfer_size = REGION_SIZE/NUM_BUFFERS;
+        size_t transfer_size = REGION_SIZE / NUM_BUFFERS;
         std::array<DataBuffer, NUM_BUFFERS> bufs;
         for (int i = 0; i < NUM_BUFFERS; i++) {
             bufs[i].realloc_buffer(transfer_size, PROT_READ | PROT_WRITE);
