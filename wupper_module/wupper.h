@@ -1,8 +1,8 @@
-/******************************************************************* 
- * \mainpage                                                       * 
- *                                                                 * 
+/*******************************************************************
+ * \mainpage                                                       *
+ *                                                                 *
  * @author: Markus Joos, CERN                                      *
- *  Maintainer: Henk Boterenbrood, Nikhef                          * 
+ *  Maintainer: Henk Boterenbrood, Nikhef                          *
  *                                                                 *
  * @brief                                                          *
  * This note defines an application program interface (API) for    *
@@ -12,7 +12,7 @@
  * FelixApplication.                                               *
  *                                                                 *
  * @copyright CERN, Nikhef                                         *
- ******************************************************************/ 
+ ******************************************************************/
 
 /***************************************************************************
  * Copyright (C) 2001-2021 CERN for the benefit of the ATLAS collaboration.*
@@ -67,8 +67,8 @@ public:
      * @param[in] dst Destination address for the transfer
      * @param[in] dma_index DMA descriptor index, expected to be a member from
      * the enum defined in register_map
-     * @param[in] wrap_around If false, DMA will operate in single transfer mode, if
-     * true will operate in wrap_around mode
+     * @param[in] wrap_around If false, DMA will operate in single transfer
+     * mode, if true will operate in wrap_around mode
      */
     void dma_to_host(size_t transfer_size, unsigned long dst, int dma_index,
         bool wrap_around);

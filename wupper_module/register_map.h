@@ -1,8 +1,8 @@
-/******************************************************************* 
- * \mainpage                                                       * 
- *                                                                 * 
+/*******************************************************************
+ * \mainpage                                                       *
+ *                                                                 *
  * @author: Markus Joos, CERN                                      *
- *  Maintainer: Henk Boterenbrood, Nikhef                          * 
+ *  Maintainer: Henk Boterenbrood, Nikhef                          *
  *                                                                 *
  * @brief                                                          *
  * This note defines an application program interface (API) for    *
@@ -12,7 +12,7 @@
  * FelixApplication.                                               *
  *                                                                 *
  * @copyright CERN, Nikhef                                         *
- ******************************************************************/ 
+ ******************************************************************/
 
 /***************************************************************************
  * Copyright (C) 2001-2021 CERN for the benefit of the ATLAS collaboration.*

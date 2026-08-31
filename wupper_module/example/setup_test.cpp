@@ -6,7 +6,8 @@ int main(int argc, char **argv)
     try {
         // Verify command line arguments
         if (argc != 3)
-            throw std::runtime_error("Command usage <Device DBDF> <IOMMU group ID>");
+            throw std::runtime_error(
+                "Command usage <Device DBDF> <IOMMU group ID>");
 
         // Initialize device interface
         Wupper xupp3r = Wupper(argv[1], std::stoi(argv[2]));
