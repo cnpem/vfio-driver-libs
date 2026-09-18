@@ -51,7 +51,7 @@ void Wupper::dma_to_host(
         throw std::runtime_error(
             "Invalid parameter: Size less than or equal zero");
 
-    if (dma_index < 0 || dma_index > 7)
+    if (dma_index < DMA_DESC_0 || dma_index > DMA_DESC_7)
         throw std::runtime_error(
             "Invalid parameter: DMA descriptor index out of range");
 
@@ -76,7 +76,7 @@ void Wupper::dma_to_host(
 
 bool Wupper::dma_is_done(int dma_index)
 {
-    if (dma_index < 0 || dma_index > 7)
+    if (dma_index < DMA_DESC_0 || dma_index > DMA_DESC_7)
         throw std::runtime_error(
             "Invalid parameter: DMA descriptor index out of range");
 
@@ -85,7 +85,7 @@ bool Wupper::dma_is_done(int dma_index)
 
 bool Wupper::dma_get_even_addr(int dma_index)
 {
-    if (dma_index < 0 || dma_index > 7)
+    if (dma_index < DMA_DESC_0 || dma_index > DMA_DESC_7)
         throw std::runtime_error(
             "Invalid parameter: DMA descriptor index out of range");
 
@@ -94,7 +94,7 @@ bool Wupper::dma_get_even_addr(int dma_index)
 
 u_long Wupper::dma_get_current_addr(int dma_index)
 {
-    if (dma_index < 0 || dma_index > 7)
+    if (dma_index < DMA_DESC_0 || dma_index > DMA_DESC_7)
         throw std::runtime_error(
             "Invalid parameter: DMA descriptor index out of range");
 
@@ -103,7 +103,7 @@ u_long Wupper::dma_get_current_addr(int dma_index)
 
 void Wupper::dma_update_read_ptr(int dma_index)
 {
-    if (dma_index < 0 || dma_index > 7)
+    if (dma_index < DMA_DESC_0 || dma_index > DMA_DESC_7)
         throw std::runtime_error(
             "Invalid parameter: DMA descriptor index out of range");
 
