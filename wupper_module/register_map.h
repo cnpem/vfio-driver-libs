@@ -55,6 +55,13 @@ typedef struct {
     volatile unsigned long even_addr_pc : 1; /* bit      66 */
 } dma_status_t;
 
+typedef struct
+{
+    volatile unsigned long address; /* bits  63:00 */
+    volatile unsigned int  data;    /* bits  95:64 */
+    volatile unsigned int  control; /* bits 127:96 */
+} int_vec_t;
+
 typedef struct {
     dma_descriptor_t DMA_DESC[8]; /* 0x000 - 0x0ff */
     unsigned char unused1[256]; /* 0x100 - 0x1ff */
@@ -74,6 +81,13 @@ typedef struct {
     unsigned char unused9[12]; /* 0x434 - 0x43f */
     volatile unsigned int REGISTERS_RESET; /* 0x440 - 0x443 */
 } wuppercard_bar0_regs_t;
+
+typedef struct
+{
+  int_vec_t               INT_VEC[8];     /* 0x000 - 0x07f */
+  unsigned char           unused1[128];   /* 0x080 - 0x0ff */
+  volatile unsigned int   INT_TAB_ENABLE; /* 0x100 - 0x107 */
+} wuppercard_bar1_regs_t;
 
 enum {
     DMA_DESC_0,
