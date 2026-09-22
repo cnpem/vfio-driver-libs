@@ -113,6 +113,7 @@ public:
     void dma_update_read_ptr(int dma_index);
 
     VFIO interface;
-    DataBuffer bar0;
+    DataBuffer bar0, bar1;
     wuppercard_bar0_regs_t *bar0_regs;
+    wuppercard_bar1_regs_t *bar1_regs;
 };

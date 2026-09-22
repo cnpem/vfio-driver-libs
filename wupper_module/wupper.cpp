@@ -37,10 +37,14 @@
 
 Wupper::Wupper(const std::string device_name, int iommu_group_id)
     : bar0(DataBuffer())
+    , bar1(DataBuffer())
     , interface(VFIO(device_name, iommu_group_id))
 {
     interface.bar_map_buffer(VFIO_PCI_BAR0_REGION_INDEX, bar0);
     bar0_regs = (wuppercard_bar0_regs_t *)bar0.vaddr;
+
+    interface.bar_map_buffer(VFIO_PCI_BAR1_REGION_INDEX, bar1);
+    bar1_regs = (wuppercard_bar1_regs_t *)bar1.vaddr;
 }
 
 void Wupper::dma_to_host(
