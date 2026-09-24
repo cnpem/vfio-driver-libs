@@ -115,6 +115,12 @@ public:
     void read_region_info(int index);
 
     void read_device_info();
+    /**
+     * @brief Set an eventfd and unmask the interrupt given on the specified
+     * sub_index in the MSIX IRQ index of the device
+     * @param[in] sub_index Sub index of the interrupt
+     */
+    void enable_irq(int sub_index);
 
     VFIO interface;
     DataBuffer bar0, bar1;
