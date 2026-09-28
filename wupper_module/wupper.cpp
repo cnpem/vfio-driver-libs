@@ -116,4 +116,24 @@ void Wupper::dma_update_read_ptr(int dma_index)
     dma_desc.read_ptr = dma_get_current_addr(dma_index);
 }
 
+void Wupper::read_region_info(int index)
+{
+    struct vfio_region_info region_info;
+    interface.get_region_info(region_info, VFIO_PCI_BAR0_REGION_INDEX);
+
+    printf("Region %d info\nFlags: 0b%04b\nSize: %llu\nOffset: %llu\n\n",
+        region_info.index, region_info.flags, region_info.size,
+        region_info.offset);
+}
+
+void Wupper::read_device_info()
+{
+    struct vfio_device_info dev_info;
+    interface.get_device_info(dev_info);
+
+    printf("Device %s info\nFlags: 0b%09b\nRegions: %d\nIRQs: %d\n\n",
+        interface.device_name.c_str(), dev_info.flags, dev_info.num_regions,
+        dev_info.num_irqs);
+}
+
 Wupper::~Wupper() { }

@@ -112,6 +112,10 @@ public:
      */
     void dma_update_read_ptr(int dma_index);
 
+    void read_region_info(int index);
+
+    void read_device_info();
+
     VFIO interface;
     DataBuffer bar0, bar1;
     wuppercard_bar0_regs_t *bar0_regs;
