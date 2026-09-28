@@ -88,26 +88,24 @@ void VFIO::check_cache_coherence()
             "Cache coherence mechanisms unsupported by IOMMU");
 }
 
-void VFIO::get_device_info()
+void VFIO::get_device_info(vfio_device_info &dev_info)
 {
-    struct vfio_device_info dev = { .argsz = sizeof(dev) };
+    dev_info.argsz = sizeof(struct vfio_device_info);
 
-    if (ioctl(device, VFIO_DEVICE_GET_INFO, &dev))
+    if (ioctl(device, VFIO_DEVICE_GET_INFO, dev_info))
         throw std::runtime_error("ioctl(): Failed to get device info");
-
-    printf("Device %s info\nFlags: 0b%09b\nRegions: %d\nIRQs: %d\n\n",
-        device_name.c_str(), dev.flags, dev.num_regions, dev.num_irqs);
 }
 
-void VFIO::get_region_info(uint32_t index)
+void VFIO::get_region_info(vfio_region_info &region_info, uint32_t index)
 {
-    struct vfio_region_info reg = { .argsz = sizeof(reg), .index = index };
+    region_info.argsz = sizeof(struct vfio_region_info);
+    region_info.index = index;
 
-    if (ioctl(device, VFIO_DEVICE_GET_REGION_INFO, &reg))
+    if (ioctl(device, VFIO_DEVICE_GET_REGION_INFO, region_info))
         throw std::runtime_error("ioctl(): Failed to get memory region info");
 
     printf("Region %d info\nFlags: 0b%04b\nSize: %llu\nOffset: %llu\n\n", index,
-        reg.flags, reg.size, reg.offset);
+        region_info.flags, region_info.size, region_info.offset);
 }
 
 void VFIO::dma_map_buffer(DataBuffer &buffer)

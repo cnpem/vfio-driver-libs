@@ -40,16 +40,20 @@ public:
     void bar_map_buffer(uint32_t index, DataBuffer &buffer);
 
     /**
-     * @brief Prints info of the device acquired through ioctl
+     * @description Initializes the passed vfio_device_info struct with
+     * VFIO_DEVICE_GET_INFO ioctl
+     * @param[out] dev_info Unitialized vfio_device_info struct
      */
-    void get_device_info();
+    void get_device_info(vfio_device_info &dev_info);
 
     /**
-     * @brief Prints info of the indexed region acquired through ioctl
+     * @description Initializes the passed vfio_region_info struct with
+     * VFIO_DEVICE_GET_REGION_INFO ioctl
+     * @param[out] region_info Unitialized vfio_region_info struct
      * @param[in] index Index of memory region in the file descriptor, expected
      * to be VFIO's interface BAR region index enum region
      */
-    void get_region_info(uint32_t index);
+    void get_region_info(vfio_region_info &region_info, uint32_t index);
 
 private:
     // VFIO interface setup properties
