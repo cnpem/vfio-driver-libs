@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <linux/vfio.h>
 #include <stdexcept>
+#include <sys/eventfd.h>
 #include <sys/mman.h>
 #include <unistd.h>
 
@@ -136,6 +137,55 @@ void VFIO::bar_map_buffer(uint32_t index, DataBuffer &buffer)
 
     if (buffer.vaddr == MAP_FAILED)
         throw std::runtime_error("mmap(): Failed to mmap buffer");
+}
+
+void VFIO::get_irq_index_info(vfio_irq_info &irq_info, uint32_t index)
+{
+    irq_info.argsz = sizeof(struct vfio_irq_info);
+    irq_info.index = index;
+
+    if (ioctl(device, VFIO_DEVICE_GET_IRQ_INFO, &irq_info))
+        throw std::runtime_error("ioctl(): Failed to get IRQs info");
+}
+
+void VFIO::resize_efds(uint32_t index)
+{
+    struct vfio_irq_info irq_info;
+
+    get_irq_index_info(irq_info, index);
+
+    efds.resize(irq_info.count);
+}
+
+void VFIO::set_irq(int operation, int index, int sub_index)
+{
+    size_t irq_size = sizeof(struct vfio_irq_set) + sizeof(int);
+
+    struct vfio_irq_set *irq_set = (struct vfio_irq_set *)calloc(1, irq_size);
+    irq_set->argsz = irq_size;
+    irq_set->index = index;
+    irq_set->start = sub_index;
+    irq_set->count = 1;
+
+    switch (operation) {
+    case SET_EFD_IRQ:
+        efds[sub_index] = eventfd(0, EFD_CLOEXEC);
+        irq_set->flags
+            = VFIO_IRQ_SET_DATA_EVENTFD | VFIO_IRQ_SET_ACTION_TRIGGER;
+        memcpy(((uint8_t *)irq_set->data) + sizeof(int), &efds[sub_index],
+            sizeof(int));
+        break;
+
+    case UNMASK_IRQ:
+        irq_set->flags = VFIO_IRQ_SET_DATA_NONE | VFIO_IRQ_SET_ACTION_UNMASK;
+        break;
+    }
+
+    if (ioctl(device, VFIO_DEVICE_SET_IRQS, irq_set)) {
+        throw std::runtime_error("ioctl(): Failed to set IRQ");
+    }
+
+    free(irq_set);
 }
 
 VFIO::~VFIO()

@@ -45,6 +45,8 @@ Wupper::Wupper(const std::string device_name, int iommu_group_id)
 
     interface.bar_map_buffer(VFIO_PCI_BAR1_REGION_INDEX, bar1);
     bar1_regs = (wuppercard_bar1_regs_t *)bar1.vaddr;
+
+    interface.create_efds(VFIO_PCI_BAR0_REGION_INDEX);
 }
 
 void Wupper::dma_to_host(
@@ -134,6 +136,18 @@ void Wupper::read_device_info()
     printf("Device %s info\nFlags: 0b%09b\nRegions: %d\nIRQs: %d\n\n",
         interface.device_name.c_str(), dev_info.flags, dev_info.num_regions,
         dev_info.num_irqs);
+}
+
+void Wupper::enable_irq(int sub_index)
+{
+    if (sub_index < 0 || sub_index > 7)
+        throw std::runtime_error(
+            "Invalid parameter: IRQ sub_index out of range");
+
+    bar1_regs->INT_TAB_ENABLE |= 1 << sub_index;
+
+    interface.set_irq(VFIO::SET_EFD_IRQ, VFIO_PCI_MSIX_IRQ_INDEX, sub_index);
+    interface.set_irq(VFIO::UNMASK_IRQ, VFIO_PCI_MSIX_IRQ_INDEX, sub_index);
 }
 
 Wupper::~Wupper() { }
