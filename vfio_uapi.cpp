@@ -92,7 +92,7 @@ void VFIO::get_device_info(vfio_device_info &dev_info)
 {
     dev_info.argsz = sizeof(struct vfio_device_info);
 
-    if (ioctl(device, VFIO_DEVICE_GET_INFO, dev_info))
+    if (ioctl(device, VFIO_DEVICE_GET_INFO, &dev_info))
         throw std::runtime_error("ioctl(): Failed to get device info");
 }
 
@@ -101,7 +101,7 @@ void VFIO::get_region_info(vfio_region_info &region_info, uint32_t index)
     region_info.argsz = sizeof(struct vfio_region_info);
     region_info.index = index;
 
-    if (ioctl(device, VFIO_DEVICE_GET_REGION_INFO, region_info))
+    if (ioctl(device, VFIO_DEVICE_GET_REGION_INFO, &region_info))
         throw std::runtime_error("ioctl(): Failed to get memory region info");
 
     printf("Region %d info\nFlags: 0b%04b\nSize: %llu\nOffset: %llu\n\n", index,
