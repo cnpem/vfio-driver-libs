@@ -11,3 +11,4 @@ wupper = library('wupper', '../wupper.cpp', include_directories: '..', dependenc
 executable('setup_test', 'setup_test.cpp', link_with: [wupper])
 executable('dma_single_transfer', 'dma_single_transfer.cpp', link_with: [wupper])
 executable('dma_multi_transfers', 'dma_multi_transfers.cpp', link_with: [wupper])
+executable('interrupt_test', 'interrupt_test.cpp', link_with: [wupper])

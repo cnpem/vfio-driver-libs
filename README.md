@@ -36,6 +36,7 @@ The application executables are built inside `<builddir>`.
 |---------------------|-------------|--------------------|
 | setup_test | Prints information of the device and BAR0 acquired through ioctl to test the functionality of the VFIO interface | `<Device DBDF> <IOMMU group ID>` |
 | dma_single_transfer | Makes a one-shot DMA transfer from the device to the host PC, prints BAR0 and the data transfer to STDOUT | `<Device DBDF> <IOMMU group ID> <Transfer size in number of pages>` |
+| interrupt_test | Prints IRQ indexes info and tests the MSIX sub-indexes | `<Device DBDF> <IOMMU group ID>` |
 | dma_multi_transfers | Allocates a 4 KB region and alternates 2 buffers mapped to read it through endless DMA operation | `<Device DBDF> <IOMMU group ID>` |
 
 # License
