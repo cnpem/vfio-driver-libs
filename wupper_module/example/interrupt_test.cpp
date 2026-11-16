@@ -3,9 +3,9 @@
 #include <cstdio>
 #include <linux/vfio.h>
 #include <stdexcept>
+#include <sys/epoll.h>
 #include <sys/eventfd.h>
 #include <sys/mman.h>
-#include <sys/select.h>
 
 #define MAX_TRANSFER 2084065280UL
 #define REGION_SIZE 4096
@@ -47,40 +47,54 @@ int main(int argc, char **argv)
         }
         printf("\n");
 
-        // Timeout for the select call
-        struct timeval timeout = {
-            .tv_sec = 1,
-            .tv_usec = 0,
-        };
+        // Setup epoll instance
+        struct epoll_event ev, ev_ret;
+        int epollfd = epoll_create1(EPOLL_CLOEXEC);
+        if (epollfd == -1)
+            throw std::runtime_error(
+                "epoll_create1(): Error opening epoll instance");
 
         // Intialize interrupts
         for (int i = 0; i < xupp3r.interface.efds.size(); i++) {
             xupp3r.enable_irq(i);
             printf("IRQ [%d, %d] enabled\n", VFIO_PCI_MSIX_IRQ_INDEX, i);
 
-            int ret;
-            eventfd_t efd;
-            fd_set fds;
-
-            FD_ZERO(&fds);
-            FD_SET(xupp3r.interface.efds[i], &fds);
+            // Add eventfd to epoll interest list
+            ev.data.fd = xupp3r.interface.efds[i];
+            ev.events = EPOLLIN;
+            if (epoll_ctl(epollfd, EPOLL_CTL_ADD, xupp3r.interface.efds[i], &ev)
+                == -1)
+                throw std::runtime_error(
+                    "epoll_ctl(): Error adding fd to interest list");
 
             // Trigger interrupt via VFIO interface
-            xupp3r.interface.set_irq(VFIO::TRIGGER_IRQ, VFIO_PCI_MSIX_IRQ_INDEX, i);
+            xupp3r.interface.set_irq(
+                VFIO::TRIGGER_IRQ, VFIO_PCI_MSIX_IRQ_INDEX, i);
 
-            ret = select(xupp3r.interface.efds[i]+1, &fds, NULL, NULL, &timeout);
+            int ret;
+            eventfd_t efd;
+            ret = epoll_wait(epollfd, &ev_ret, 1, 1000);
             if (ret < 0)
-                throw std::runtime_error("IRQ test error");
+                throw std::runtime_error("epoll(): Error reading eventfd");
             else if (ret)
                 if (read(xupp3r.interface.efds[i], &efd, sizeof(efd)) < 0)
-                    throw std::runtime_error("EFD with invalid value");
+                    throw std::runtime_error("read(): Error reading eventfd");
                 else {
-                    printf("IRQ [%d, %d] success\n", VFIO_PCI_MSIX_IRQ_INDEX, i);
-                    printf("Counter = %lu\n", efd);
+                    printf("Interrupt correctly captured!\n efd counter: %lu\n",
+                        efd);
+                    printf(
+                        "Returned event struct:\n data_fd: %d\n events: %04x\n",
+                        ev_ret.data.fd, ev_ret.events);
                 }
-            else 
-                printf("IRQ test timeout\n\n");
-            printf("Eventfd %d ret = %d\n\n", i, ret);
+            else
+                printf("epoll(): Timeout\n\n");
+            printf("epoll_wait for IRQ %d ret = %d\n\n", i, ret);
+
+            if (epoll_ctl(
+                    epollfd, EPOLL_CTL_DEL, xupp3r.interface.efds[i], NULL)
+                == -1)
+                throw std::runtime_error(
+                    "epoll_ctl(): Error deleting fd from interest list");
         }
 
     } catch (std::runtime_error &e) {
