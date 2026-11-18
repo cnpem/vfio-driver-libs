@@ -11,6 +11,16 @@ capability for devices. These drivers are implemented in subdirectories as
 modules that call the VFIO library. Inside the modules there is a subdirectory
 with example applications for operation of the device.
 
+## VFIO bind
+
+In order to use this library, firstly the device needs to be bound to the
+`vfio-pci` module. 
+
+We recommend the use of the script or the udev rule found in the following
+repository:
+
+[vfio-pci-bind](https://github.com/andre-richter/vfio-pci-bind/tree/master)
+
 ## Usage
 
 The example applications come with a Meson build system.
