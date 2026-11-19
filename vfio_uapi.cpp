@@ -103,9 +103,6 @@ void VFIO::get_region_info(vfio_region_info &region_info, uint32_t index)
 
     if (ioctl(device, VFIO_DEVICE_GET_REGION_INFO, &region_info))
         throw std::runtime_error("ioctl(): Failed to get memory region info");
-
-    printf("Region %d info\nFlags: 0b%04b\nSize: %llu\nOffset: %llu\n\n", index,
-        region_info.flags, region_info.size, region_info.offset);
 }
 
 void VFIO::dma_map_buffer(DataBuffer &buffer)
