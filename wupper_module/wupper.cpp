@@ -119,7 +119,7 @@ void Wupper::dma_update_read_ptr(int dma_index)
 void Wupper::read_region_info(int index)
 {
     struct vfio_region_info region_info;
-    interface.get_region_info(region_info, VFIO_PCI_BAR0_REGION_INDEX);
+    interface.get_region_info(region_info, index);
 
     printf("Region %d info\nFlags: 0b%04b\nSize: %llu\nOffset: %llu\n\n",
         region_info.index, region_info.flags, region_info.size,
